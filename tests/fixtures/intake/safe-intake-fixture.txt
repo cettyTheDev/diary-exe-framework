@@ -1,0 +1,10 @@
+DIARY.EXE SAFE INTAKE FIXTURE
+SYNTHETIC TEST MATERIAL — NOT A DIARY SOURCE
+
+=== FIXTURE PAGE 1 ===
+This page marker exists only to test deterministic inventory.
+No person, event, quotation, or source claim is represented.
+
+=== FIXTURE PAGE 2 ===
+This second marker verifies ordered page enumeration.
+The dry run must stop before extraction or OCR.

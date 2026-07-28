@@ -1,0 +1,20 @@
+DIARY.EXE SYNTHETIC CORPUS FIXTURE
+This file contains no diary text and is safe only for pipeline testing.
+
+=== FIXTURE PAGE 1 SOURCE_TEXT CONFIDENCE 1.0 ===
+[FIXTURE DATE 2020-01-02]
+[Synthetic source-import checkpoint. No real event or quotation.]
+[ENTITY: Person placeholder A]
+[TOPIC: Source review]
+
+=== FIXTURE PAGE 2 OCR CONFIDENCE 0.72 ===
+[FIXTURE DATE 2020-02]
+[Synthetic OCR checkpoint with deliberately reduced confidence.]
+[ENTITY: Organization placeholder]
+[TOPIC: OCR review]
+
+=== FIXTURE PAGE 3 SOURCE_TEXT CONFIDENCE 1.0 ===
+[FIXTURE DATE UNKNOWN]
+[Synthetic undated checkpoint. No source claim is made.]
+[ENTITY: Entry record 001]
+[TOPIC: Date review]
