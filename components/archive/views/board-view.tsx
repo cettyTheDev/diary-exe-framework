@@ -82,11 +82,12 @@ export function BoardView({
     <section className="flex flex-col gap-6" aria-label="Relationship board">
       <Alert>
         <NetworkIcon />
-        <AlertTitle>Curated board / evidence-safe mode</AlertTitle>
+        <AlertTitle>Curated relationship board</AlertTitle>
         <AlertDescription>
-          Thread means “inspect this typed relationship,” never “assume
-          causality.” All visible nodes and edges are synthetic interface
-          fixtures.
+          Evidence-safe means every line has an individually reviewed page
+          citation. A line records the stated interaction; it never claims
+          influence or causality. All visible nodes and edges are synthetic
+          interface fixtures.
         </AlertDescription>
       </Alert>
       <div className="board-arc-toolbar" aria-label="Curated story arc scope">

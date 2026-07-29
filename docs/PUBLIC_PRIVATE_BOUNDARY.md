@@ -46,6 +46,13 @@ same source identity and checksum across every batch. Reject duplicate batch
 artifacts, overlapping review candidates, and conflicting record IDs, then
 rerun production quality checks over the complete merged public slice.
 
+Treat relationship graphs as a separate publication layer. Bind a reviewed
+graph overlay to one immutable approved-artifact hash; require each edge to use
+known entity endpoints and a citation assigned to an approved entry containing
+both endpoints. Reject stale overlays, unknown citations, fixture leakage, and
+unreviewed editorial or causal edges. A named entity alone is not permission to
+publish a relationship.
+
 The public template intentionally remains in fixture mode because it does not
 ship that adapter or any production configuration. Downstream deployments
 should make the active runtime state visible in the UI and must fall back to
