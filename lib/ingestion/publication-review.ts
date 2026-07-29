@@ -37,7 +37,9 @@ function sensitivePatternFlags(rawText: string) {
     flags.push("ssn_pattern")
   }
   if (
-    /^\[OCR REQUIRED — NO SOURCE TEXT EXTRACTED FROM PAGE \d+\]$/.test(rawText)
+    /^\[OCR REQUIRED — (?:NO SOURCE TEXT EXTRACTED FROM|NO TEXT RECOGNIZED ON) PAGE \d+\]$/.test(
+      rawText
+    )
   ) {
     flags.push("ocr_required")
   }

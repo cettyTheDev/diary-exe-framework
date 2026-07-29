@@ -42,6 +42,12 @@ keep queue artifacts, raw transcription, reviewer names, and decision files in
 private storage and review all outputs before connecting them to a public
 adapter.
 
+The optional OCR adapter is also local-only framework code. It does not confer
+permission to acquire or process a document and does not make recognized text
+publication-ready. Private integrations must supply their own authorized
+bytes, keep rendered pages and OCR results outside this repository, verify the
+transcription, and disclose only separately approved ranges.
+
 ## Publication kill switch
 
 A deployment may provide controls to disable public routes, revoke backend

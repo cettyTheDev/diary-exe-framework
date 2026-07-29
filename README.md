@@ -17,6 +17,8 @@ or private project history.
   checks;
 - exact-range publication review contracts plus a localhost-only human review
   workbench;
+- a bounded local PDF.js/Tesseract OCR adapter for private image-only page
+  processing, with no network provider;
 - a read-only `ArchiveRepository` boundary for replacing fixtures with a
   private server-side adapter;
 - fail-closed storage, extraction, quotation, and page-display gates.
@@ -58,6 +60,15 @@ decision file atomically with `0600` permissions. Downstream private systems
 are responsible for creating a queue with the exported contracts and for
 keeping raw extraction text and reviewer identity out of Git and deployment
 artifacts.
+
+`createPdfJsTesseractOcrAdapter` is available to private downstream pipelines
+that have already passed their own source and use-authorization gates. It
+preserves embedded text pages, renders only image-only pages in memory, streams
+PNG bytes to a local Tesseract process over stdin, records confidence and tool
+version, and returns an explicit OCR-required marker for blank scans. The
+adapter has bounded page count, render scale, process output, and per-page
+runtime; its output is unverified extraction evidence and still requires human
+publication review.
 
 ## Public/private boundary
 

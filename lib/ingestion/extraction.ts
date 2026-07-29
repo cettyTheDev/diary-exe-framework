@@ -17,7 +17,9 @@ export type PageWorkItem = {
 export type PageExtractionAdapter = {
   id: string
   version: string
-  prepare(contents: Uint8Array): readonly PageWorkItem[]
+  prepare(
+    contents: Uint8Array
+  ): readonly PageWorkItem[] | Promise<readonly PageWorkItem[]>
   extractPage(page: PageWorkItem): Promise<string>
 }
 
@@ -89,7 +91,7 @@ export async function runPageExtraction({
     )
   }
 
-  const workItems = adapter.prepare(contents)
+  const workItems = await adapter.prepare(contents)
   validateWorkItems(workItems)
   const pages: PageExtractionArtifact[] = []
   let reusedPages = 0
