@@ -29,6 +29,7 @@ import {
 import { archiveRepository } from "@/data/archive-repository"
 import { type ArchiveEntry } from "@/lib/archive/repository"
 import { evidenceLabels, type EvidenceKind } from "@/lib/archive/types"
+import { EvidenceMagazineCover } from "@/components/archive/receipts/evidence-magazine-cover"
 
 export function ReceiptsView({
   onOpenTrace,
@@ -47,6 +48,10 @@ export function ReceiptsView({
         className="flex min-w-0 flex-col gap-5"
         aria-label="Receipt feed"
       >
+        <EvidenceMagazineCover
+          summary={summary}
+          citationCount={archiveRepository.listCitations().length}
+        />
         <div className="feed-utility">
           <span>
             {featuredEntries.length.toString().padStart(2, "0")} EDITORIAL CARDS

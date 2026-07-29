@@ -19,7 +19,27 @@ function fitText(
   maxWidth: number,
   maxLines: number
 ) {
-  const words = text.trim().split(/\s+/).filter(Boolean)
+  const words = text
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .flatMap((word) => {
+      if (context.measureText(word).width <= maxWidth) return [word]
+
+      const chunks: string[] = []
+      let chunk = ""
+      for (const character of word) {
+        const candidate = `${chunk}${character}`
+        if (chunk && context.measureText(candidate).width > maxWidth) {
+          chunks.push(chunk)
+          chunk = character
+        } else {
+          chunk = candidate
+        }
+      }
+      if (chunk) chunks.push(chunk)
+      return chunks
+    })
   const lines: string[] = []
 
   for (const word of words) {
@@ -107,7 +127,7 @@ export function renderShareReceiptToCanvas(
   context.fillStyle = "#1d1c18"
   context.fillRect(0, 0, RECEIPT_WIDTH, RECEIPT_HEIGHT)
 
-  context.fillStyle = "#efe5ca"
+  context.fillStyle = "#f6eadf"
   context.fillRect(40, 40, RECEIPT_WIDTH - 80, RECEIPT_HEIGHT - 80)
 
   context.fillStyle = "rgba(29, 28, 24, 0.035)"
@@ -115,18 +135,18 @@ export function renderShareReceiptToCanvas(
     context.fillRect(40, y, RECEIPT_WIDTH - 80, 1)
   }
 
-  context.fillStyle = model.isFixture ? "#a83b2f" : "#446d2e"
+  context.fillStyle = model.isFixture ? "#a83b2f" : "#d12676"
   context.fillRect(40, 40, 18, RECEIPT_HEIGHT - 80)
 
-  context.fillStyle = "#22211d"
+  context.fillStyle = "#4f2769"
   context.font = "900 68px Georgia, serif"
   context.fillText("DIARY.EXE", 78, 130)
-  context.fillStyle = "#596f27"
+  context.fillStyle = "#8a2f93"
   context.font = "700 20px 'Courier New', monospace"
-  context.fillText("MAKE RECEIPT / LOCAL EXPORT", 82, 168)
+  context.fillText("EVIDENCE MAGAZINE / LOCAL EXPORT", 82, 168)
 
   context.textAlign = "right"
-  context.fillStyle = model.isFixture ? "#a83b2f" : "#446d2e"
+  context.fillStyle = model.isFixture ? "#a83b2f" : "#8a2f93"
   context.font = "800 19px 'Courier New', monospace"
   context.fillText(model.watermark, RECEIPT_WIDTH - 76, 111)
   context.fillStyle = "#4d4a3c"
@@ -134,10 +154,21 @@ export function renderShareReceiptToCanvas(
   context.textAlign = "left"
 
   drawRule(context, 196)
-  drawLabel(context, model.dateLabel, 78, 235)
-  drawLabel(context, model.evidenceLabel, 78, 270, "#a83b2f")
+  context.fillStyle = "#8a2f93"
+  context.font = "800 18px 'Courier New', monospace"
+  context.fillText("THE PRIVATE RECORD / THE PUBLIC TRACE", 78, 224)
+  context.textAlign = "right"
+  context.strokeStyle = "#d12676"
+  context.lineWidth = 3
+  context.strokeRect(708, 202, 294, 34)
+  context.fillStyle = "#d12676"
+  context.font = "800 14px 'Courier New', monospace"
+  context.fillText("DO NOT OPEN WITHOUT THE TRACE", 992, 224)
+  context.textAlign = "left"
+  drawLabel(context, model.dateLabel, 78, 270)
+  drawLabel(context, model.evidenceLabel, 78, 305, "#a83b2f")
 
-  const titleEnd = drawTextBlock(context, model.title, 78, 344, 924, {
+  const titleEnd = drawTextBlock(context, model.title, 78, 372, 924, {
     color: "#22211d",
     font: "800 62px Georgia, serif",
     lineHeight: 66,
@@ -145,10 +176,10 @@ export function renderShareReceiptToCanvas(
   })
 
   const excerptRule = Math.max(titleEnd + 18, 430)
-  context.fillStyle = "#d8cd96"
+  context.fillStyle = "#d12676"
   context.fillRect(78, excerptRule, 924, 8)
 
-  drawLabel(context, "ARCHIVE EXCERPT", 86, excerptRule + 48, "#596f27")
+  drawLabel(context, "ARCHIVE EXCERPT", 86, excerptRule + 48, "#8a2f93")
   drawTextBlock(context, `“${model.excerpt}”`, 86, excerptRule + 88, 900, {
     color: "#22211d",
     font: "700 34px Georgia, serif",
@@ -247,7 +278,7 @@ export function renderShareReceiptToCanvas(
   )
 
   drawRule(context, 1197)
-  context.fillStyle = model.isFixture ? "#a83b2f" : "#446d2e"
+  context.fillStyle = model.isFixture ? "#a83b2f" : "#8a2f93"
   context.font = "800 22px 'Courier New', monospace"
   context.fillText(model.watermark, 78, 1242)
   context.fillStyle = "#4d4a3c"

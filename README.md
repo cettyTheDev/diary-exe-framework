@@ -18,6 +18,7 @@ or private project history.
 ## What is included
 
 - a Next.js archive UI with receipts, timeline, relationship, and source views;
+- a fixture-safe evidence-magazine discovery cover and local share-card renderer;
 - typed provenance, citation, review, and authorization contracts;
 - deterministic fixture-only ingestion, extraction, indexing, and quality
   checks;

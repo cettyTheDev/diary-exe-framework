@@ -149,12 +149,17 @@ function ReceiptPreview({ model }: { model: ShareReceiptModel }) {
         <div className="share-receipt-header">
           <div>
             <strong>DIARY.EXE</strong>
-            <span>MAKE RECEIPT / LOCAL EXPORT</span>
+            <span>EVIDENCE MAGAZINE / LOCAL EXPORT</span>
           </div>
           <div>
             <b>{model.watermark}</b>
             <span>SCHEMA {model.schemaVersion}</span>
           </div>
+        </div>
+
+        <div className="share-receipt-coverline">
+          <span>THE PRIVATE RECORD / THE PUBLIC TRACE</span>
+          <b>DO NOT OPEN WITHOUT THE TRACE</b>
         </div>
 
         <div className="share-receipt-intro">
