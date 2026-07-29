@@ -33,6 +33,19 @@ Implement the public `ArchiveRepository` interface in a server-only adapter.
 The browser should receive only reviewed fields that are already approved for
 public disclosure. A private backend does not make browser responses private.
 
+A production adapter should expose an approved public slice, not its private
+review queue. Keep the slice bounded and self-contained: exact approved ranges,
+neutral editorial context, canonical dates, source identity and checksum,
+cited page numbers, and only the relationships required by those records.
+Replace full-page extraction text with an explicit withheld marker. Revalidate
+fixture separation, checksums, citation integrity, privacy decisions, and the
+minimum activation threshold again when loading the server-side runtime.
+
+The public template intentionally remains in fixture mode because it does not
+ship that adapter or any production configuration. Downstream deployments
+should make the active runtime state visible in the UI and must fall back to
+conspicuously labeled fixtures—or stop responding—when validation fails.
+
 Never put secrets in client bundles, public environment variables, static
 files, source maps, logs returned to the browser, or API error bodies.
 

@@ -25,7 +25,7 @@ Entries refer to sources, entities, topics, story arcs, and citations by stable 
 
 ## Ingestion boundary
 
-The five `data/` stages are intentionally separate. Future M2 ingestion should inventory originals and checksums first, then extract page-by-page, preserve OCR confidence, normalize without deleting raw text, and emit deterministic records. Public relationships require human review.
+The five `data/` stages are intentionally separate. Future M2 ingestion should inventory originals and checksums first, then extract page-by-page, preserve OCR confidence, normalize without deleting raw text, and emit deterministic records. Public relationships require accountable source review.
 
 The repository contract is intentionally storage-agnostic. A future server or generated-index adapter must satisfy the same read methods rather than exposing corpus storage directly to UI components.
 

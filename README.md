@@ -15,7 +15,7 @@ or private project history.
 - typed provenance, citation, review, and authorization contracts;
 - deterministic fixture-only ingestion, extraction, indexing, and quality
   checks;
-- exact-range publication review contracts plus a localhost-only human review
+- exact-range publication review contracts plus a localhost-only accountable review
   workbench;
 - a bounded local PDF.js/Tesseract OCR adapter for private image-only page
   processing, with no network provider;
@@ -67,8 +67,8 @@ preserves embedded text pages, renders only image-only pages in memory, streams
 PNG bytes to a local Tesseract process over stdin, records confidence and tool
 version, and returns an explicit OCR-required marker for blank scans. The
 adapter has bounded page count, render scale, process output, and per-page
-runtime; its output is unverified extraction evidence and still requires human
-publication review.
+runtime; its output is unverified extraction evidence and still requires
+accountable source and publication review.
 
 ## Public/private boundary
 
