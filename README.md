@@ -4,6 +4,12 @@ An evidence-first archive interface and ingestion framework for building
 source-linked timelines, relationship boards, receipts, and page-level review
 workflows.
 
+## Live project
+
+[Explore DIARY.EXE](https://diary-exe.vercel.app) — a live project built with
+this framework. Its reviewed production content, source registry, and private
+publication pipeline are not included in this public repository.
+
 This public repository contains framework code and conspicuously labeled
 synthetic fixtures only. It contains no real source registry, source URL,
 document, quotation, page image, production index, approval record, credential,
