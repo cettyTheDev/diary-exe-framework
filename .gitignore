@@ -36,3 +36,7 @@ pnpm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 .vercel
+
+# private review artifacts
+/data/editorial/review-queues/*
+!/data/editorial/review-queues/.gitkeep

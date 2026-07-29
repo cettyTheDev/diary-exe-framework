@@ -16,6 +16,7 @@ const privateDataDirectories = [
   "data/extracted",
   "data/normalized",
   "data/indexes",
+  "data/editorial/review-queues",
 ] as const
 
 test("public example candidate cannot identify or resolve a real source", () => {

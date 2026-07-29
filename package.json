@@ -22,6 +22,7 @@
     "intake:dry-run": "node --experimental-strip-types scripts/intake-dry-run.ts",
     "m2:vault-demo": "node --experimental-strip-types scripts/vault-fixture-demo.ts",
     "m2:fixture-pipeline": "node --experimental-strip-types scripts/m2-fixture-pipeline.ts",
+    "review:workbench": "node --experimental-strip-types scripts/private-review-workbench.ts",
     "quality:report": "node --experimental-strip-types scripts/quality-report.ts",
     "public:check": "node --test --experimental-strip-types tests/public-boundary.test.ts",
     "typecheck": "tsc --noEmit",

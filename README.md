@@ -15,6 +15,8 @@ or private project history.
 - typed provenance, citation, review, and authorization contracts;
 - deterministic fixture-only ingestion, extraction, indexing, and quality
   checks;
+- exact-range publication review contracts plus a localhost-only human review
+  workbench;
 - a read-only `ArchiveRepository` boundary for replacing fixtures with a
   private server-side adapter;
 - fail-closed storage, extraction, quotation, and page-display gates.
@@ -44,8 +46,18 @@ npm run intake:dry-run
 npm run intake:gate
 npm run m2:vault-demo
 npm run m2:fixture-pipeline
+npm run review:workbench -- --queue data/editorial/review-queues/<run-id>/queue.json --decisions data/editorial/review-queues/<run-id>/decisions.json --reviewer <name>
 npm run quality:report
 ```
+
+The review workbench is a standalone Node process, not a public Next.js route.
+It accepts only queue/decision artifacts inside the ignored
+`data/editorial/review-queues/` directory, binds to `127.0.0.1`, requires a
+random session token, derives exact quotation text server-side, and writes the
+decision file atomically with `0600` permissions. Downstream private systems
+are responsible for creating a queue with the exported contracts and for
+keeping raw extraction text and reviewer identity out of Git and deployment
+artifacts.
 
 ## Public/private boundary
 

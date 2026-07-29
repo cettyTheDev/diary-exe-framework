@@ -10,6 +10,8 @@ should keep project-specific material in separate private systems.
 - read-only repository interfaces and generic adapters;
 - deterministic synthetic fixtures and tests;
 - fail-closed quality and authorization logic.
+- publication-review contracts, validation, and a localhost-only review UI
+  that stores no source or decision data in the repository.
 
 ## Private deployment repository
 
@@ -33,6 +35,12 @@ public disclosure. A private backend does not make browser responses private.
 
 Never put secrets in client bundles, public environment variables, static
 files, source maps, logs returned to the browser, or API error bodies.
+
+The optional review workbench binds only to `127.0.0.1`; it is not a production
+backend or a route to deploy. Its queue directory is ignored. Operators must
+keep queue artifacts, raw transcription, reviewer names, and decision files in
+private storage and review all outputs before connecting them to a public
+adapter.
 
 ## Publication kill switch
 

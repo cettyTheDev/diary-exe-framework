@@ -372,3 +372,83 @@ export type M2PipelineQualityReport = {
   }
   errors: readonly string[]
 }
+
+export type PublicationSensitivePattern =
+  "email_address" | "phone_number" | "ssn_pattern" | "ocr_required"
+
+export type PublicationReviewCandidate = {
+  schemaVersion: "1.0"
+  id: string
+  extractionId: string
+  sourceId: string
+  sourceFileId: string
+  pageNumber: number
+  rawText: string
+  rawTextSha256: string
+  method: "source_text" | "ocr"
+  confidence: number
+  sensitivePatternFlags: readonly PublicationSensitivePattern[]
+  readyForQuoteReview: boolean
+  isFixture: false
+}
+
+type PublicationReviewDecisionBase = {
+  schemaVersion: "1.0"
+  decisionId: string
+  candidateId: string
+  reviewer: string
+  reviewedAt: string
+  note: string
+  isFixture: false
+}
+
+export type PublicationRejectDecision = PublicationReviewDecisionBase & {
+  disposition: "reject"
+  reason:
+    | "not_an_entry"
+    | "privacy"
+    | "third_party_material"
+    | "insufficient_context"
+    | "extraction_quality"
+    | "duplicate"
+    | "other"
+}
+
+export type PublicationPublishDecision = PublicationReviewDecisionBase & {
+  disposition: "publish"
+  quoteStart: number
+  quoteEnd: number
+  exactText: string
+  title: string
+  context: string
+  date: string | null
+  datePrecision: "day" | "month" | "range" | "unknown"
+  recordType:
+    "diary_entry" | "email" | "transcript" | "publisher_annotation" | "unknown"
+  evidenceKind: "diary_text" | "unresolved"
+  editorialPosture: "source_record" | "publisher_claim" | "editorial_comparison"
+  responseState: "not_applicable" | "pending" | "included"
+  privacyReview: "clear" | "redacted"
+  privacyNote: string
+  thirdPartyReview: "none" | "excluded"
+  transcriptionVerified: true
+  sourceLinkVerified: true
+}
+
+export type PublicationReviewDecision =
+  PublicationRejectDecision | PublicationPublishDecision
+
+export type PublicationReviewReport = {
+  schemaVersion: "1.0"
+  valid: boolean
+  readyForPublication: boolean
+  approvedCandidateIds: readonly string[]
+  metrics: {
+    candidates: number
+    publish: number
+    reject: number
+    pending: number
+    blocked: number
+  }
+  errors: readonly string[]
+}
