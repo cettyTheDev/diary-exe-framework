@@ -1,6 +1,7 @@
 "use client"
 
 import { Layers3Icon, NetworkIcon } from "lucide-react"
+import type { CSSProperties } from "react"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
@@ -17,6 +18,7 @@ import {
 import { type OpenTrace } from "@/components/archive/archive-config"
 import { useArchiveQuery } from "@/components/archive/shared/use-archive-query"
 import { archiveRepository } from "@/data/archive-repository"
+import { BOARD_VIEWBOX, createBoardLayout } from "@/lib/archive/board-layout"
 import { relationshipLabels } from "@/lib/archive/types"
 import { readEnumParam } from "@/lib/archive/url-state"
 import { cn } from "@/lib/utils"
@@ -42,6 +44,7 @@ export function BoardView({
   const entities = archiveRepository.listEntities()
   const relationships = archiveRepository.listRelationships()
   const storyArcs = archiveRepository.listStoryArcs()
+  const boardLayout = createBoardLayout(entities, relationships)
   const scopedCitationIds = new Set(
     scopedEntries.flatMap((entry) => entry.citationIds)
   )
@@ -132,64 +135,102 @@ export function BoardView({
           })}
         </div>
       </div>
-      <div className="evidence-board">
+      <div
+        className={cn(
+          "evidence-board",
+          entities.length >= 16 && "is-dense"
+        )}
+      >
         <div className="board-grid" aria-hidden="true" />
         <svg
           className="board-lines"
-          viewBox="0 0 1000 560"
+          viewBox={`0 0 ${BOARD_VIEWBOX.width} ${BOARD_VIEWBOX.height}`}
           preserveAspectRatio="none"
           aria-hidden="true"
         >
-          <path d="M190 150 C330 150 330 280 485 280" />
-          <path d="M190 425 C330 420 350 320 485 290" />
-          <path d="M615 280 C740 255 760 150 860 145" />
+          {boardLayout.edges.map((edge) => (
+            <path
+              key={edge.id}
+              d={edge.path}
+              className={
+                selectedArcId !== "all" &&
+                !scopedRelationships.some(
+                  (relationship) => relationship.id === edge.id
+                )
+                  ? "is-muted"
+                  : undefined
+              }
+            />
+          ))}
         </svg>
-        {entities.map((entity, index) => (
-          <button
-            key={entity.id}
-            type="button"
-            className={cn(
-              "board-node",
-              `node-${index + 1}`,
-              focusId === entity.id && "is-focused",
-              selectedArcId !== "all" &&
-                !scopedEntityIds.has(entity.id) &&
-                "is-muted"
-            )}
-            aria-pressed={focusId === entity.id}
-            onClick={() =>
-              onOpenTrace(entryForEntity(entity.id).id, { focus: entity.id })
-            }
-          >
-            <span className="board-pin" aria-hidden="true" />
-            <span className="board-node-kind">{entity.kind.toUpperCase()}</span>
-            <strong>{entity.label}</strong>
-            <small>{entity.description}</small>
-            <Badge variant="destructive">DEMO NODE</Badge>
-          </button>
-        ))}
-        {relationships.map((relationship, index) => (
-          <button
-            key={relationship.id}
-            type="button"
-            className={cn(
-              "thread-label",
-              `thread-${index + 1}`,
-              focusId === relationship.id && "is-focused",
-              selectedArcId !== "all" &&
-                !scopedRelationships.includes(relationship) &&
-                "is-muted"
-            )}
-            aria-pressed={focusId === relationship.id}
-            onClick={() =>
-              onOpenTrace(entryForCitation(relationship.citationIds[0]).id, {
-                focus: relationship.id,
-              })
-            }
-          >
-            {relationshipLabels[relationship.type].toUpperCase()} ↗
-          </button>
-        ))}
+        {boardLayout.nodes.map((node) => {
+          const entity = archiveRepository.getEntity(node.id)
+          if (!entity) return null
+          return (
+            <button
+              key={entity.id}
+              type="button"
+              className={cn(
+                "board-node",
+                focusId === entity.id && "is-focused",
+                selectedArcId !== "all" &&
+                  !scopedEntityIds.has(entity.id) &&
+                  "is-muted"
+              )}
+              style={
+                {
+                  "--board-x": `${(node.x / BOARD_VIEWBOX.width) * 100}%`,
+                  "--board-y": `${(node.y / BOARD_VIEWBOX.height) * 100}%`,
+                  "--board-rotation": `${node.rotation}deg`,
+                } as CSSProperties
+              }
+              aria-pressed={focusId === entity.id}
+              onClick={() =>
+                onOpenTrace(entryForEntity(entity.id).id, { focus: entity.id })
+              }
+            >
+              <span className="board-pin" aria-hidden="true" />
+              <span className="board-node-kind">
+                {entity.kind.toUpperCase()} · {node.degree} LINKS
+              </span>
+              <strong>{entity.label}</strong>
+              <small>{entity.description}</small>
+              <Badge variant="destructive">DEMO NODE</Badge>
+            </button>
+          )
+        })}
+        {boardLayout.edges.map((edge, index) => {
+          const relationship = relationships.find((item) => item.id === edge.id)
+          if (!relationship) return null
+          return (
+            <button
+              key={relationship.id}
+              type="button"
+              className={cn(
+                "thread-label",
+                focusId === relationship.id && "is-focused",
+                selectedArcId !== "all" &&
+                  !scopedRelationships.includes(relationship) &&
+                  "is-muted"
+              )}
+              style={
+                {
+                  "--thread-x": `${(edge.labelX / BOARD_VIEWBOX.width) * 100}%`,
+                  "--thread-y": `${(edge.labelY / BOARD_VIEWBOX.height) * 100}%`,
+                } as CSSProperties
+              }
+              aria-label={`${relationshipLabels[relationship.type]} edge ${index + 1}`}
+              aria-pressed={focusId === relationship.id}
+              onClick={() =>
+                onOpenTrace(entryForCitation(relationship.citationIds[0]).id, {
+                  focus: relationship.id,
+                })
+              }
+            >
+              {String(index + 1).padStart(2, "0")}
+            </button>
+          )
+        })}
       </div>
       <div className="grid gap-4 lg:grid-cols-3">
         {relationships.map((relationship) => {
