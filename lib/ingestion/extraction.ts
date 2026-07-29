@@ -53,11 +53,14 @@ function validateAuthorization(
 }
 
 function validateWorkItems(items: readonly PageWorkItem[]) {
+  const firstPage = items[0]?.pageNumber
   if (
     items.length === 0 ||
+    !Number.isSafeInteger(firstPage) ||
+    (firstPage ?? 0) < 1 ||
     items.some(
       (item, index) =>
-        item.pageNumber !== index + 1 ||
+        item.pageNumber !== (firstPage ?? 0) + index ||
         item.payload.trim().length === 0 ||
         item.confidence < 0 ||
         item.confidence > 1

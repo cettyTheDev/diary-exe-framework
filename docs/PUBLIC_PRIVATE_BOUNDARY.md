@@ -41,6 +41,11 @@ Replace full-page extraction text with an explicit withheld marker. Revalidate
 fixture separation, checksums, citation integrity, privacy decisions, and the
 minimum activation threshold again when loading the server-side runtime.
 
+When a private deployment combines multiple approved batches, require the
+same source identity and checksum across every batch. Reject duplicate batch
+artifacts, overlapping review candidates, and conflicting record IDs, then
+rerun production quality checks over the complete merged public slice.
+
 The public template intentionally remains in fixture mode because it does not
 ship that adapter or any production configuration. Downstream deployments
 should make the active runtime state visible in the UI and must fall back to

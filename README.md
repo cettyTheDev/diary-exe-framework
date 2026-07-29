@@ -15,6 +15,7 @@ or private project history.
 - typed provenance, citation, review, and authorization contracts;
 - deterministic fixture-only ingestion, extraction, indexing, and quality
   checks;
+- bounded contiguous extraction windows for downstream page-batch workflows;
 - exact-range publication review contracts plus a localhost-only accountable review
   workbench;
 - a bounded local PDF.js/Tesseract OCR adapter for private image-only page
@@ -69,6 +70,11 @@ version, and returns an explicit OCR-required marker for blank scans. The
 adapter has bounded page count, render scale, process output, and per-page
 runtime; its output is unverified extraction evidence and still requires
 accountable source and publication review.
+
+The extraction kernel accepts a positive contiguous page window instead of
+assuming every run starts at page one. Downstream adapters remain responsible
+for enforcing their own maximum window size, document bounds, authorization,
+and private-output location.
 
 ## Public/private boundary
 

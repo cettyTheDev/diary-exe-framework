@@ -69,6 +69,39 @@ test("marked fixture adapter emits page text and OCR confidence", async () => {
   })
 })
 
+test("extraction accepts a bounded sequential window after page one", async () => {
+  await withFixtureReceipt(async ({ receipt, contents }) => {
+    const windowedAdapter: PageExtractionAdapter = {
+      id: "windowed-fixture",
+      version: "1.0.0",
+      prepare() {
+        return [101, 102].map((pageNumber) => ({
+          pageNumber,
+          payload: `Synthetic window page ${pageNumber}`,
+          method: "source_text" as const,
+          confidence: 1,
+        }))
+      },
+      async extractPage(page) {
+        return page.payload
+      },
+    }
+    const result = await runPageExtraction({
+      runId: "run-extract-window",
+      receipt,
+      contents,
+      adapter: windowedAdapter,
+      authorization: { mode: "fixture" },
+    })
+
+    assert.equal(result.status, "complete")
+    assert.deepEqual(
+      result.pages.map((page) => page.pageNumber),
+      [101, 102]
+    )
+  })
+})
+
 test("extraction resumes after a deterministic page failure", async () => {
   await withFixtureReceipt(async ({ receipt, contents }) => {
     const failingAdapter: PageExtractionAdapter = {
