@@ -93,6 +93,16 @@ export function BoardView({
   const selectedArc =
     selectedArcId === "all" ? undefined : repository.getStoryArc(selectedArcId)
   const boardLayout = createBoardLayout(entities, relationships)
+  const hubDegree = Math.max(
+    0,
+    ...boardLayout.nodes.map((node) => node.degree)
+  )
+  const lensEntity = lensEntityId
+    ? repository.getEntity(lensEntityId)
+    : undefined
+  const lensDegree = lensEntityId
+    ? (boardLayout.nodes.find((node) => node.id === lensEntityId)?.degree ?? 0)
+    : 0
   const relationshipIndex = new Map(
     relationships.map((relationship, index) => [relationship.id, index + 1])
   )
@@ -185,7 +195,7 @@ export function BoardView({
 
   return (
     <section className="flex flex-col gap-6" aria-label="Relationship board">
-      <Alert>
+      <Alert className="board-evidence-note">
         <NetworkIcon />
         <AlertTitle>Curated relationship board</AlertTitle>
         <AlertDescription>
@@ -279,9 +289,17 @@ export function BoardView({
               <strong>{entities.length} reviewed entities</strong>
             </div>
             <p>
-              Drag to pan. Scroll or use the controls to zoom. Hover a card to
-              isolate its cited connections; choose any card or number to open
-              the source record.
+              {lensEntity ? (
+                <>
+                  RELATIONSHIP LENS · {lensEntity.label} · {lensDegree} cited{" "}
+                  {lensDegree === 1 ? "link" : "links"}
+                </>
+              ) : (
+                <>
+                  Drag to pan. Scroll to zoom. Hover a marker to isolate its
+                  cited connections.
+                </>
+              )}
             </p>
             <div className="board-view-tools" aria-label="Map view controls">
               <MoveIcon aria-hidden="true" />
@@ -408,6 +426,10 @@ export function BoardView({
                     type="button"
                     className={cn(
                       "board-node",
+                      `is-kind-${entity.kind}`,
+                      node.degree === hubDegree &&
+                        node.degree > 1 &&
+                        "is-hub",
                       focusId === entity.id && "is-focused",
                       selectedArcId !== "all" &&
                         !scopedEntityIds.has(entity.id) &&
@@ -435,7 +457,10 @@ export function BoardView({
                   >
                     <span className="board-pin" aria-hidden="true" />
                     <span className="board-node-kind">
-                      {entity.kind.toUpperCase()} · {node.degree} LINKS
+                      {entity.kind.toUpperCase()}
+                    </span>
+                    <span className="board-node-degree" aria-hidden="true">
+                      {String(node.degree).padStart(2, "0")}
                     </span>
                     <strong>{entity.label}</strong>
                     <small>{entity.description}</small>

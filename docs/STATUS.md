@@ -5,6 +5,7 @@ Updated: 2026-07-30 UTC
 ## Completed
 
 - The fixture-safe Board now exposes bounded 70%–240% zoom, drag and keyboard panning, reset controls, and a focus/hover relationship lens. Dense graphs remain a full-width card list below 72rem so touch scrolling and text readability are preserved.
+- The generic Board visual layer now replaces uniform rectangular nodes and a square grid with an entity-shaped evidence orbit: circular hubs, irregular person markers, organization capsules, topic hexagons, relation-count seals, orbit guides, pill arc filters, and alternating evidence-card corners. Fixture labels remain explicit and unchanged.
 - A source-neutral approved-slice contract and compact runtime package are now public framework code. The compact form omits only deterministic repetition and must reconstruct an artifact that passes its original checksum, review attestation, and production-quality gates.
 - Production schemas now require an HTTPS source URL plus explicit editorial posture and response state; fixture data keeps those production-only values null or absent and remains visibly synthetic.
 - The relationship board is data-driven instead of four-node hard-coded: a deterministic layout supports small fixture graphs and bounded dense downstream graphs, separates repeated edges, preserves connected-component order, and switches dense nodes to a narrower-screen list.
