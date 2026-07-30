@@ -46,6 +46,7 @@ export function ReceiptsView({
   return (
     <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_19rem]">
       <section
+        id="receipt-feed"
         className="flex min-w-0 flex-col gap-5"
         aria-label="Receipt feed"
       >

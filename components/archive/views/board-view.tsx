@@ -8,6 +8,7 @@ import {
   useState,
 } from "react"
 import {
+  ArrowDownRightIcon,
   Layers3Icon,
   LocateFixedIcon,
   MinusIcon,
@@ -34,6 +35,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { createBoardClusters } from "@/lib/archive/board-clusters"
 import { BOARD_VIEWBOX, createBoardLayout } from "@/lib/archive/board-layout"
+import { createBoardStarters } from "@/lib/archive/board-starters"
 import { relationshipLabels } from "@/lib/archive/types"
 import { readEnumParam } from "@/lib/archive/url-state"
 import { archiveRepository } from "@/data/archive-repository"
@@ -68,6 +70,20 @@ export function BoardView({
   const repository = archiveRepository
   const { searchParams, updateParams } = useArchiveQuery()
   const storyArcs = repository.listStoryArcs()
+  const relationships = repository.listRelationships()
+  const arcMetrics = storyArcs.map((arc) => {
+    const entries = repository.listEntries({ storyArcId: arc.id })
+    const citations = new Set(entries.flatMap((entry) => entry.citationIds))
+    const edgeCount = relationships.filter((relationship) =>
+      relationship.citationIds.some((id) => citations.has(id))
+    ).length
+    return { arc, edgeCount, entries }
+  })
+  const starterArcs = createBoardStarters(
+    repository.listEntries(),
+    relationships,
+    storyArcs
+  )
   const arcValues = ["all", ...storyArcs.map((arc) => arc.id)]
   const isFixture = true
   const selectedArcId = readEnumParam(searchParams, "arc", arcValues, "all")
@@ -76,7 +92,6 @@ export function BoardView({
     storyArcId: selectedArcId === "all" ? undefined : selectedArcId,
   })
   const entities = repository.listEntities()
-  const relationships = repository.listRelationships()
   const scopedCitationIds = new Set(
     scopedEntries.flatMap((entry) => entry.citationIds)
   )
@@ -143,6 +158,20 @@ export function BoardView({
     setPan({ x: 0, y: 0 })
   }
 
+  function selectArc(nextArc: string, focusMap = false) {
+    updateParams({
+      arc: nextArc === "all" ? null : nextArc,
+      focus: null,
+    })
+    if (focusMap) {
+      window.requestAnimationFrame(() => {
+        document
+          .getElementById("relationship-map")
+          ?.scrollIntoView({ block: "start" })
+      })
+    }
+  }
+
   function changeZoom(delta: number) {
     setZoom((current) => clampBoardZoom(current + delta))
   }
@@ -202,7 +231,7 @@ export function BoardView({
   }
 
   return (
-    <section className="flex flex-col gap-6" aria-label="Relationship board">
+    <section className="flex flex-col gap-4" aria-label="Relationship board">
       <Alert className="board-evidence-note">
         <NetworkIcon />
         <AlertTitle>Curated relationship board</AlertTitle>
@@ -215,6 +244,32 @@ export function BoardView({
             : "Only citation-backed relationships appear here."}
         </AlertDescription>
       </Alert>
+
+      {starterArcs.length > 0 && (
+        <div id="board-start" className="board-fast-start">
+          <div>
+            <span>START HERE</span>
+            <strong>Try a synthetic evidence path</strong>
+          </div>
+          <div role="group" aria-label="Suggested fixture map starting points">
+            {starterArcs.map(({ arc, edgeCount, entryCount }) => (
+              <Button
+                key={arc.id}
+                variant="outline"
+                size="sm"
+                onClick={() => selectArc(arc.id, true)}
+              >
+                {arc.label}
+                <span>
+                  {edgeCount} {edgeCount === 1 ? "link" : "links"} ·{" "}
+                  {entryCount} entries
+                </span>
+                <ArrowDownRightIcon data-icon="inline-end" />
+              </Button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="board-arc-toolbar" aria-label="Curated story arc scope">
         <div className="board-arc-summary">
@@ -237,10 +292,7 @@ export function BoardView({
           value={[selectedArcId]}
           onValueChange={(value) => {
             const nextArc = value[0] ?? "all"
-            updateParams({
-              arc: nextArc === "all" ? null : nextArc,
-              focus: null,
-            })
+            selectArc(nextArc)
           }}
           aria-label="Filter relationship board by story arc"
         >
@@ -251,14 +303,7 @@ export function BoardView({
               &amp; groups
             </span>
           </ToggleGroupItem>
-          {storyArcs.map((arc) => {
-            const entries = repository.listEntries({ storyArcId: arc.id })
-            const citations = new Set(
-              entries.flatMap((entry) => entry.citationIds)
-            )
-            const edgeCount = relationships.filter((relationship) =>
-              relationship.citationIds.some((id) => citations.has(id))
-            ).length
+          {arcMetrics.map(({ arc, edgeCount, entries }) => {
             return (
               <ToggleGroupItem
                 key={arc.id}
@@ -290,7 +335,7 @@ export function BoardView({
       )}
 
       {relationships.length > 0 && (
-        <div className="board-canvas-shell">
+        <div id="relationship-map" className="board-canvas-shell">
           <div className="board-canvas-heading">
             <div>
               <span>RELATIONSHIP MAP</span>

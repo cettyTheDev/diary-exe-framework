@@ -86,7 +86,11 @@ export function SourcesView({
         </dl>
       </header>
 
-      <nav className="source-contact-map" aria-label="Demo source pages">
+      <nav
+        id="source-map"
+        className="source-contact-map"
+        aria-label="Demo source pages"
+      >
         <div className="source-contact-heading">
           <div>
             <span className="trace-label">DEMO PAGES WITH FIXTURE LINKS</span>
@@ -111,6 +115,7 @@ export function SourcesView({
               aria-current={
                 item.pageNumber === pageNumber ? "location" : undefined
               }
+              title={`Synthetic page position ${item.pageNumber}; no source claim`}
               style={{ "--source-density": "72%" } as CSSProperties}
             >
               <i aria-hidden="true" />

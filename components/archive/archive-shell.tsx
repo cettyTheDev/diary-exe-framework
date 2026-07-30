@@ -2,12 +2,30 @@ import type * as React from "react"
 import Link from "next/link"
 import { ArrowRightIcon } from "lucide-react"
 
+import { Button } from "@/components/ui/button"
 import {
   navigation,
   type ArchiveView,
   viewCopy,
 } from "@/components/archive/archive-config"
 import { cn } from "@/lib/utils"
+
+const introActions: Record<
+  ArchiveView,
+  { label: string; target: `#${string}` }
+> = {
+  receipts: { label: "START WITH A DEMO RECEIPT", target: "#receipt-feed" },
+  timeline: { label: "SEARCH THE DEMO RECORD", target: "#timeline-record" },
+  board: { label: "CHOOSE A FIXTURE ISLAND", target: "#board-start" },
+  sources: { label: "CHOOSE A DEMO PAGE", target: "#source-map" },
+}
+
+const evidenceJourney = [
+  "DEMO EXCERPT",
+  "EVIDENCE DETAILS",
+  "DEMO PAGE",
+  "SOURCE REQUIRED",
+] as const
 
 export function ArchiveShell({
   children,
@@ -16,6 +34,9 @@ export function ArchiveShell({
   children: React.ReactNode
   view: ArchiveView
 }) {
+  const introAction = introActions[view]
+  const activeJourneyStep = view === "sources" ? 2 : view === "board" ? 1 : 0
+
   return (
     <div className="archive-shell min-h-svh">
       <a className="skip-link" href="#archive-content">
@@ -76,7 +97,7 @@ export function ArchiveShell({
       <main
         id="archive-content"
         tabIndex={-1}
-        className="mx-auto flex w-full max-w-[1440px] flex-col gap-8 px-4 py-8 sm:px-6 lg:px-10 lg:py-12"
+        className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 py-6 sm:px-6 lg:px-10 lg:py-8"
       >
         <section className="view-intro">
           <div className="flex flex-col gap-3">
@@ -84,12 +105,34 @@ export function ArchiveShell({
             <h1>{viewCopy[view].title}</h1>
             <p>{viewCopy[view].description}</p>
           </div>
-          <div className="intro-command">
-            <span>RUN DIARY.EXE</span>
-            <ArrowRightIcon aria-hidden="true" />
-            <span>{view.toUpperCase()}</span>
-          </div>
+          <Button
+            render={<a href={introAction.target} />}
+            nativeButton={false}
+            variant="outline"
+            className="intro-command"
+          >
+            {introAction.label}
+            <ArrowRightIcon data-icon="inline-end" />
+          </Button>
         </section>
+
+        <aside className="evidence-journey" aria-label="Demo evidence path">
+          <span>THE FRAMEWORK DEMONSTRATES THIS PATH</span>
+          <ol>
+            {evidenceJourney.map((label, index) => (
+              <li
+                key={label}
+                className={
+                  index === activeJourneyStep ? "is-current" : undefined
+                }
+                aria-current={index === activeJourneyStep ? "step" : undefined}
+              >
+                <b>{String(index + 1).padStart(2, "0")}</b>
+                <span>{label}</span>
+              </li>
+            ))}
+          </ol>
+        </aside>
 
         {children}
       </main>

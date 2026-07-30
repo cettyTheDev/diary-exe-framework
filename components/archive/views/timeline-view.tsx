@@ -81,7 +81,11 @@ export function TimelineView({
   }
 
   return (
-    <section className="flex flex-col gap-5" aria-label="Timeline records">
+    <section
+      id="timeline-record"
+      className="flex flex-col gap-5"
+      aria-label="Timeline records"
+    >
       <Card>
         <CardHeader>
           <CardTitle>Query the local index</CardTitle>

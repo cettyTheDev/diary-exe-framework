@@ -27,6 +27,8 @@ or private project history.
 - exact-page handoff controls from fixture Receipts, Timeline, Board evidence
   cards, and Trace into a focused three-step reading path in the synthetic Source
   Files workbench, while direct navigation still begins at its overview;
+- real same-page quick-entry actions, a fixture-labeled four-step evidence path,
+  and data-derived synthetic Board starting islands for first-time comprehension;
 - typed provenance, citation, review, and authorization contracts;
 - deterministic fixture-only ingestion, extraction, indexing, and quality
   checks;
