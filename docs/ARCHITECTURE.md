@@ -30,4 +30,11 @@ The five `data/` stages are intentionally separate. Future M2 ingestion should i
 
 The repository contract is intentionally storage-agnostic. A future server or generated-index adapter must satisfy the same read methods rather than exposing corpus storage directly to UI components.
 
+`approved-archive-slice.ts` defines the source-neutral, checksummed public-slice
+contract. `approved-runtime-compact.ts` may encode a valid single-source slice
+without repeated page templates, source page IDs, or deterministically derived
+normalized text. Expansion restores the exact artifact structure and reruns
+the original checksum and production-quality validation before a downstream
+adapter can consume it.
+
 M1.2 ingestion contracts and the fixture-only dry-run boundary are documented in `docs/INGESTION.md`. The current runner is path-confined, deterministic, read-only, and stops before extraction; it is not the future authoritative-source adapter.

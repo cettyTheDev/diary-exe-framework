@@ -8,6 +8,7 @@ export const archiveFixtures: ArchiveData = {
       fileName: "not-imported.pdf",
       version: "fixture-v1",
       checksum: null,
+      sourceUrl: null,
       status: "demo",
       pageIds: ["page-demo-1", "page-demo-2", "page-demo-3"],
       isFixture: true,

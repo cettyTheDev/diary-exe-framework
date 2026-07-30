@@ -9,7 +9,8 @@ should keep project-specific material in separate private systems.
 - record, citation, provenance, and approval types;
 - read-only repository interfaces and generic adapters;
 - deterministic synthetic fixtures and tests;
-- fail-closed quality and authorization logic.
+- fail-closed quality and authorization logic;
+- approved-slice checksum validation and deterministic runtime compaction.
 - publication-review contracts, validation, and a localhost-only review UI
   that stores no source or decision data in the repository.
 
@@ -57,6 +58,11 @@ The public template intentionally remains in fixture mode because it does not
 ship that adapter or any production configuration. Downstream deployments
 should make the active runtime state visible in the UI and must fall back to
 conspicuously labeled fixtures—or stop responding—when validation fails.
+
+Compact runtime packages are transport containers, not secrecy controls. Keep
+their values server-only. Expansion must reconstruct the complete approved
+artifact and pass its original checksum, review attestation, and production
+quality checks before publication.
 
 Never put secrets in client bundles, public environment variables, static
 files, source maps, logs returned to the browser, or API error bodies.

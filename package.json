@@ -4,13 +4,13 @@
   "license": "MIT",
   "type": "module",
   "private": true,
-  "homepage": "https://github.com/cettyTheDev/diary-exe-framework",
+  "homepage": "https://github.com/heycetty/diary-exe-framework",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cettyTheDev/diary-exe-framework.git"
+    "url": "https://github.com/heycetty/diary-exe-framework.git"
   },
   "bugs": {
-    "url": "https://github.com/cettyTheDev/diary-exe-framework/issues"
+    "url": "https://github.com/heycetty/diary-exe-framework/issues"
   },
   "scripts": {
     "dev": "next dev",

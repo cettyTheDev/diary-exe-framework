@@ -24,6 +24,9 @@ export type Entry = {
   topicIds: string[]
   storyArcIds: string[]
   featured: boolean
+  editorialPosture?:
+    "source_record" | "publisher_claim" | "editorial_comparison"
+  responseState?: "not_applicable" | "pending" | "included"
   isFixture: boolean
 }
 
@@ -33,6 +36,7 @@ export type SourceDocument = {
   fileName: string
   version: string
   checksum: string | null
+  sourceUrl: string | null
   status: CitationState
   pageIds: string[]
   isFixture: boolean
@@ -57,7 +61,13 @@ export type Entity = {
 }
 
 export type RelationshipType =
-  "mentioned" | "met" | "discussed" | "responded" | "editorial_link"
+  | "mentioned"
+  | "met"
+  | "discussed"
+  | "responded"
+  | "briefed"
+  | "collaborated"
+  | "editorial_link"
 
 export type Relationship = {
   id: string
@@ -118,5 +128,7 @@ export const relationshipLabels: Record<RelationshipType, string> = {
   met: "met",
   discussed: "discussed",
   responded: "responded",
+  briefed: "briefed",
+  collaborated: "collaborated",
   editorial_link: "editorial link",
 }

@@ -86,6 +86,24 @@ export function generateArchiveQualityReport(
           recordId: source.id,
         })
       }
+      if (!source.sourceUrl) {
+        errors.push({
+          code: "PRODUCTION_SOURCE_URL_REQUIRED",
+          severity: "error",
+          message: `Production source ${source.id} requires an official source URL.`,
+          recordId: source.id,
+        })
+      }
+    }
+    for (const entry of data.entries) {
+      if (!entry.editorialPosture || !entry.responseState) {
+        errors.push({
+          code: "PRODUCTION_EDITORIAL_STATE_REQUIRED",
+          severity: "error",
+          message: `Production entry ${entry.id} requires editorial posture and response state.`,
+          recordId: entry.id,
+        })
+      }
     }
   } else if (fixtureRecords === 0) {
     warnings.push({

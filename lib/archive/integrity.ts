@@ -54,6 +54,15 @@ export function validateArchiveData(data: ArchiveData): string[] {
   }
 
   for (const source of data.sources) {
+    if (source.sourceUrl !== null) {
+      try {
+        if (new URL(source.sourceUrl).protocol !== "https:") {
+          errors.push(`Source ${source.id} must use an HTTPS source URL`)
+        }
+      } catch {
+        errors.push(`Source ${source.id} has an invalid source URL`)
+      }
+    }
     for (const pageId of source.pageIds) {
       const page = pageIndex.get(pageId)
       if (!page) {

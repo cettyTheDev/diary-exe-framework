@@ -25,6 +25,8 @@ or private project history.
 - bounded contiguous extraction windows for downstream page-batch workflows;
 - exact-range publication review contracts plus a localhost-only accountable review
   workbench;
+- a source-neutral approved-slice artifact contract and deterministic compact
+  runtime package that revalidates the original checksum after expansion;
 - a bounded local PDF.js/Tesseract OCR adapter for private image-only page
   processing, with no network provider;
 - a read-only `ArchiveRepository` boundary for replacing fixtures with a
@@ -82,6 +84,13 @@ The extraction kernel accepts a positive contiguous page window instead of
 assuming every run starts at page one. Downstream adapters remain responsible
 for enforcing their own maximum window size, document bounds, authorization,
 and private-output location.
+
+`createCompactApprovedRuntimePackage` is available after a downstream system
+has produced a valid approved-slice artifact. It removes only deterministic
+repetition from the server payload, never source content or review evidence,
+and `expandCompactApprovedRuntimePackage` reconstructs and revalidates the
+original artifact before use. The framework does not ship a production source,
+runtime environment value, or deployment adapter.
 
 ## Public/private boundary
 
