@@ -4,6 +4,7 @@ Updated: 2026-07-30 UTC
 
 ## Completed
 
+- The fixture-safe Source Files comprehension layer distinguishes overview navigation from evidence handoff: direct navigation stays at the map, exact-page actions focus a three-step demo reading path, page cards avoid duplicate numbering, and technical fixture IDs are collapsed. No real source identity, URL, quotation, or page image is introduced.
 - Every discovery view now hands off to the exact synthetic Source Files page. Receipt cards, Timeline rows, Board evidence cards, and the redesigned Trace handoff share one route helper; the destination deliberately drops Trace overlay state and remains visibly labeled as demo data.
 - The fixture Source Files page now demonstrates the full terminal evidence-workbench structure: source dossier, document-density map, page frames, paper placeholder, and selected-record inspector. All three frames are explicitly marked as demo interactions and no official-source action is enabled.
 - The fixture-safe Board now exposes bounded 70%–240% zoom, drag and keyboard panning, reset controls, and a focus/hover relationship lens. Dense graphs remain a full-width card list below 72rem so touch scrolling and text readability are preserved.
@@ -18,6 +19,7 @@ Updated: 2026-07-30 UTC
 
 ## Verified
 
+- ESLint, strict TypeScript, all 61 fixture/boundary tests, the nine-route build, three explicit public-boundary checks, a source-specific identity scan, and a zero-vulnerability audit pass for the Source Files comprehension layer. Chromium verifies the focused demo reading path, 25 visible demo/source-boundary markers, zero external source links, closed technical details, `390:390` mobile width, overview scroll position zero, and zero console errors or warnings.
 - ESLint, strict TypeScript, all 61 fixture/boundary tests, the nine-route build, and a zero-vulnerability audit pass for the exact-page handoff layer. Chromium verifies Receipt page 3 navigation, the fixture Trace handoff, `390:390` mobile width, persistent `DEMO` labeling, and zero console errors or warnings; the existing public-data scans still gate production identities, source locations, artifacts, and credentials.
 - Chromium verifies three synthetic Source frames, repeated demo/source-boundary labels, zero source URLs or production identities, exact viewport width, and zero console errors or warnings. The 59-test suite, all three explicit public-boundary checks, nine-route build, and zero-vulnerability audit pass.
 - ESLint, strict TypeScript, all 59 fixture/boundary tests, and the nine-route production build pass.

@@ -69,9 +69,9 @@ export const viewCopy: Record<
   },
   sources: {
     sequence: "04 / ORIGINAL ARCHIVE",
-    title: "The source page is the final word.",
+    title: "See the cited page behind every excerpt.",
     description:
-      "Browse the manifest, extraction status, and page-level text. This fixture manifest remains deliberately unresolved until authoritative files are approved.",
+      "Follow a demo evidence path from an archive entry to its page record. This fixture manifest remains deliberately unresolved until authoritative files are approved.",
   },
 }
 
