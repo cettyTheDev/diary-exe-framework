@@ -26,6 +26,7 @@ import {
   EvidenceBadge,
   formatDate,
 } from "@/components/archive/shared/archive-ui"
+import { SourcePageLink } from "@/components/archive/shared/source-page-link"
 import { archiveRepository } from "@/data/archive-repository"
 import { type ArchiveEntry } from "@/lib/archive/repository"
 import { evidenceLabels, type EvidenceKind } from "@/lib/archive/types"
@@ -227,6 +228,10 @@ function ReceiptCard({
           ))}
         </div>
         <div className="flex flex-wrap gap-2">
+          <SourcePageLink
+            pageNumber={entry.sourcePages[0]}
+            isFixture={entry.isFixture}
+          />
           <Button
             variant="outline"
             size="sm"

@@ -859,6 +859,18 @@
   line-height: 1.55;
 }
 
+.timeline-row-actions {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.source-page-link {
+  font-family: var(--font-code);
+  letter-spacing: 0.025em;
+}
+
 .timeline-list.is-dense .timeline-entry-copy p {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2040,6 +2052,46 @@
   padding: 0.8rem;
 }
 
+.trace-source-handoff {
+  border: 1px solid oklch(0.55 0.2 28 / 42%);
+  border-radius: 1rem 0.2rem 1rem 0.2rem;
+  background:
+    linear-gradient(135deg, transparent 72%, oklch(0.78 0.18 135 / 10%)),
+    oklch(0.16 0.015 82);
+  color: oklch(0.92 0.03 84);
+  box-shadow: 0 0.9rem 2rem oklch(0.08 0.015 75 / 22%);
+}
+
+.trace-source-handoff [data-slot="card-description"] {
+  color: oklch(0.7 0.02 84);
+}
+
+.trace-source-handoff [data-slot="card-footer"] {
+  border-color: oklch(1 0 0 / 12%);
+  background: oklch(0.11 0.012 82 / 76%);
+}
+
+.trace-handoff-route {
+  display: grid;
+  grid-template-columns: auto minmax(1.5rem, 1fr) auto minmax(1.5rem, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  color: oklch(0.64 0.02 84);
+  font-family: var(--font-code);
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+}
+
+.trace-handoff-route i {
+  height: 1px;
+  background: oklch(1 0 0 / 22%);
+}
+
+.trace-handoff-route strong {
+  color: var(--highlight);
+  font-size: 0.62rem;
+}
+
 .receipt-composer-content {
   display: flex;
   flex-direction: column;
@@ -2500,7 +2552,9 @@
     grid-column: 1 !important;
   }
 
-  .timeline-row > [data-slot="button"] {
+  .timeline-row > [data-slot="button"],
+  .timeline-row-actions,
+  .timeline-row-actions [data-slot="button"] {
     width: 100%;
   }
 

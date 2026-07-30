@@ -26,6 +26,7 @@ import {
   topicFilterItems,
 } from "@/components/archive/shared/archive-ui"
 import { useArchiveQuery } from "@/components/archive/shared/use-archive-query"
+import { SourcePageLink } from "@/components/archive/shared/source-page-link"
 import { archiveRepository } from "@/data/archive-repository"
 import { type EvidenceKind } from "@/lib/archive/types"
 import { readEnumParam } from "@/lib/archive/url-state"
@@ -197,14 +198,21 @@ export function TimelineView({
                     : `${entry.exactText} ${entry.context}`}
                 </p>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onOpenTrace(entry.id)}
-              >
-                OPEN TRACE
-                <ArrowRightIcon data-icon="inline-end" />
-              </Button>
+              <div className="timeline-row-actions">
+                <SourcePageLink
+                  pageNumber={entry.sourcePages[0]}
+                  isFixture={entry.isFixture}
+                  label="SOURCE"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onOpenTrace(entry.id)}
+                >
+                  OPEN TRACE
+                  <ArrowRightIcon data-icon="inline-end" />
+                </Button>
+              </div>
             </article>
           ))}
         </div>

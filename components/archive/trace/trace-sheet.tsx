@@ -1,10 +1,19 @@
 "use client"
 
 import Link from "next/link"
-import { CalendarDaysIcon, FolderOpenIcon, NetworkIcon } from "lucide-react"
+import { CalendarDaysIcon, NetworkIcon } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import {
   Sheet,
@@ -18,6 +27,7 @@ import {
   EvidenceBadge,
   formatDate,
 } from "@/components/archive/shared/archive-ui"
+import { SourcePageLink } from "@/components/archive/shared/source-page-link"
 import { archiveRepository } from "@/data/archive-repository"
 import { type ArchiveEntry } from "@/lib/archive/repository"
 import { evidenceLabels } from "@/lib/archive/types"
@@ -34,6 +44,7 @@ export function TraceSheet({
   const citations = entry
     ? archiveRepository.getCitations(entry.citationIds)
     : []
+  const sourcePage = entry?.sourcePages[0]
 
   return (
     <Sheet open={Boolean(entry)} onOpenChange={(open) => !open && onClose()}>
@@ -82,14 +93,44 @@ export function TraceSheet({
                     <dd>NOT COMPUTED</dd>
                   </div>
                 </dl>
-                <Button
-                  render={<Link href={`/sources?trace=${entry.id}`} />}
-                  nativeButton={false}
-                  variant="outline"
-                >
-                  <FolderOpenIcon data-icon="inline-start" />
-                  OPEN SOURCE FILES
-                </Button>
+                <Card className="trace-source-handoff" size="sm">
+                  <CardHeader>
+                    <span className="trace-label">EVIDENCE HANDOFF</span>
+                    <CardTitle>
+                      Continue to demo source page {sourcePage}
+                    </CardTitle>
+                    <CardDescription>
+                      Open the selected fixture page without keeping this Trace
+                      sheet over the evidence workbench.
+                    </CardDescription>
+                    <CardAction>
+                      <Badge variant="destructive">DEMO</Badge>
+                    </CardAction>
+                  </CardHeader>
+                  <CardContent>
+                    <div
+                      className="trace-handoff-route"
+                      aria-label="Evidence path"
+                    >
+                      <span>DISCOVERY</span>
+                      <i aria-hidden="true" />
+                      <strong>
+                        PAGE {sourcePage?.toString().padStart(3, "0")}
+                      </strong>
+                      <i aria-hidden="true" />
+                      <span>SOURCE CONTEXT</span>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <SourcePageLink
+                      pageNumber={sourcePage}
+                      isFixture
+                      variant="default"
+                      size="default"
+                      label="OPEN SOURCE PAGE"
+                    />
+                  </CardFooter>
+                </Card>
               </section>
               <Separator />
               <section>

@@ -18,6 +18,7 @@ import {
 
 import { type OpenTrace } from "@/components/archive/archive-config"
 import { useArchiveQuery } from "@/components/archive/shared/use-archive-query"
+import { SourcePageLink } from "@/components/archive/shared/source-page-link"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -98,15 +99,8 @@ export function BoardView({
     relationships,
     storyArcs
   )
-  const boardLayout = createBoardLayout(
-    entities,
-    relationships,
-    boardClusters
-  )
-  const hubDegree = Math.max(
-    0,
-    ...boardLayout.nodes.map((node) => node.degree)
-  )
+  const boardLayout = createBoardLayout(entities, relationships, boardClusters)
+  const hubDegree = Math.max(0, ...boardLayout.nodes.map((node) => node.degree))
   const lensEntity = lensEntityId
     ? repository.getEntity(lensEntityId)
     : undefined
@@ -503,9 +497,7 @@ export function BoardView({
                       "board-node",
                       `is-kind-${entity.kind}`,
                       node.clusterId && "is-clustered",
-                      node.degree === hubDegree &&
-                        node.degree > 1 &&
-                        "is-hub",
+                      node.degree === hubDegree && node.degree > 1 && "is-hub",
                       focusId === entity.id && "is-focused",
                       selectedArcId !== "all" &&
                         !scopedEntityIds.has(entity.id) &&
@@ -644,7 +636,11 @@ export function BoardView({
                       {citation?.state.toUpperCase()}
                     </p>
                   </CardContent>
-                  <CardFooter>
+                  <CardFooter className="flex-wrap gap-2">
+                    <SourcePageLink
+                      pageNumber={citation?.pageNumbers[0]}
+                      isFixture={isFixture}
+                    />
                     <Button
                       variant="outline"
                       size="sm"

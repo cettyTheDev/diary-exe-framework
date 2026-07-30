@@ -24,6 +24,8 @@ or private project history.
   islands, a relationship lens, and a mobile reading-list fallback;
 - a source workbench with a document-density map, page-frame navigation, paper
   review surface, and selected-page inspector over permanently synthetic data;
+- exact-page handoff controls from fixture Receipts, Timeline, Board evidence
+  cards, and Trace into the synthetic Source Files workbench;
 - typed provenance, citation, review, and authorization contracts;
 - deterministic fixture-only ingestion, extraction, indexing, and quality
   checks;
