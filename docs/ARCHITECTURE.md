@@ -16,7 +16,7 @@ Each top-level mode is a shareable App Router route. A selected entry is encoded
 - RECEIPTS, TIMELINE, THE BOARD, SOURCE FILES, and the shared Trace sheet live in independent client modules under `components/archive/views/` and `components/archive/trace/`.
 - Shared evidence badges, date formatting, filter definitions, and select composition live under `components/archive/shared/`; product copy and navigation configuration live in `archive-config.ts`.
 - UI modules read through the no-write `ArchiveRepository` contract in `lib/archive/repository.ts`; `data/archive-repository.ts` is the only runtime adapter that knows about demo fixtures. The repository owns entry filtering, canonical lookups, page-to-entry resolution, relation hydration, and archive summary metrics.
-- `lib/archive/board-layout.ts` keeps small graphs on a deterministic degree-centered orbit and moves dense 16–24-node graphs to a separated rectangular perimeter. Dense graphs fall back to a stacked representation below 72rem so downstream private adapters can expand reviewed relationship sets without overlapping evidence controls.
+- `lib/archive/board-layout.ts` keeps small graphs on a deterministic degree-centered orbit and moves dense 16–24-node graphs to a separated rectangular perimeter. On wide screens the Board adds bounded zoom/pan and keyboard controls plus a direct-connection lens; below 72rem it falls back to a full-width stacked reading list without trapping touch scrolling.
 - Future corpus payloads must be queried server-side or through a read-only index; the full archive must not be shipped in the initial client bundle.
 - `loading.tsx`, `error.tsx`, and `not-found.tsx` provide route-level states.
 
