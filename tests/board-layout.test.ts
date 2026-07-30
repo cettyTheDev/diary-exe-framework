@@ -77,6 +77,28 @@ test("board layout groups assigned entities into labeled story islands", () => {
     layout.nodes.find((node) => node.id === "entity-delta")?.clusterId,
     "arc-delta"
   )
+  assert.deepEqual(
+    layout.nodes.find((node) => node.id === "entity-alpha"),
+    {
+      id: "entity-alpha",
+      x: 430,
+      y: 370,
+      rotation: -0.4,
+      degree: 3,
+      clusterId: null,
+    }
+  )
+  assert.deepEqual(layout.trunks.map((trunk) => trunk.id), ["arc-alpha"])
+  assert.equal(
+    layout.clusters.every(
+      (cluster) =>
+        cluster.anchorX >= 0 &&
+        cluster.anchorX <= BOARD_VIEWBOX.width &&
+        cluster.anchorY >= 0 &&
+        cluster.anchorY <= BOARD_VIEWBOX.height
+    ),
+    true
+  )
   assert.deepEqual(layout, createBoardLayout(entities, relationships, clusters))
 })
 

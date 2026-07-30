@@ -448,6 +448,27 @@ export function BoardView({
                 ))}
               </svg>
               <svg
+                className="board-trunks"
+                viewBox={`0 0 ${BOARD_VIEWBOX.width} ${BOARD_VIEWBOX.height}`}
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                {boardLayout.trunks.map((trunk) => (
+                  <path
+                    key={trunk.id}
+                    d={trunk.path}
+                    className={cn(
+                      selectedArcId !== "all" &&
+                        trunk.id !== selectedArcId &&
+                        "is-muted",
+                      lensClusterId &&
+                        trunk.id !== lensClusterId &&
+                        "is-deemphasized"
+                    )}
+                  />
+                ))}
+              </svg>
+              <svg
                 className="board-lines"
                 viewBox={`0 0 ${BOARD_VIEWBOX.width} ${BOARD_VIEWBOX.height}`}
                 preserveAspectRatio="none"
