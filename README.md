@@ -20,8 +20,8 @@ or private project history.
 - a Next.js archive UI with receipts, timeline, zoomable organic relationship, and
   source views;
 - a fixture-safe evidence-magazine discovery cover and local share-card renderer;
-- bounded Board zoom/pan controls, keyboard navigation, an entity-shaped orbit
-  map, a relationship lens, and a mobile reading-list fallback;
+- bounded Board zoom/pan controls, keyboard navigation, evidence-derived story
+  islands, a relationship lens, and a mobile reading-list fallback;
 - typed provenance, citation, review, and authorization contracts;
 - deterministic fixture-only ingestion, extraction, indexing, and quality
   checks;

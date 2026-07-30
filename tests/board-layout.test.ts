@@ -2,6 +2,7 @@ import assert from "node:assert/strict"
 import test from "node:test"
 
 import { BOARD_VIEWBOX, createBoardLayout } from "../lib/archive/board-layout.ts"
+import type { BoardClusterInput } from "../lib/archive/board-clusters.ts"
 import type { Entity, Relationship } from "../lib/archive/types.ts"
 
 const entities: Entity[] = ["alpha", "bravo", "charlie", "delta"].map((id) => ({
@@ -43,6 +44,40 @@ test("board layout is deterministic and separates repeated endpoint pairs", () =
   assert.deepEqual(first, createBoardLayout(entities, relationships))
   assert.notEqual(first.edges[0]?.path, first.edges[1]?.path)
   assert.equal(first.edges.length, relationships.length)
+})
+
+test("board layout groups assigned entities into labeled story islands", () => {
+  const clusters: BoardClusterInput[] = [
+    {
+      id: "arc-alpha",
+      label: "Alpha arc",
+      entityIds: ["entity-alpha", "entity-bravo", "entity-charlie"],
+    },
+    {
+      id: "arc-delta",
+      label: "Delta arc",
+      entityIds: ["entity-delta"],
+    },
+  ]
+  const layout = createBoardLayout(entities, relationships, clusters)
+
+  assert.equal(layout.clusters.length, 2)
+  assert.deepEqual(
+    layout.clusters.map((cluster) => [cluster.id, cluster.nodeCount]),
+    [
+      ["arc-alpha", 2],
+      ["arc-delta", 1],
+    ]
+  )
+  assert.equal(
+    layout.nodes.find((node) => node.id === "entity-bravo")?.clusterId,
+    "arc-alpha"
+  )
+  assert.equal(
+    layout.nodes.find((node) => node.id === "entity-delta")?.clusterId,
+    "arc-delta"
+  )
+  assert.deepEqual(layout, createBoardLayout(entities, relationships, clusters))
 })
 
 test("board layout keeps secondary connected components adjacent on the orbit", () => {

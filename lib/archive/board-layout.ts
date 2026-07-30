@@ -1,4 +1,5 @@
 import type { Entity, Relationship } from "./types"
+import type { BoardClusterInput } from "./board-clusters"
 
 type BoardEntity = Pick<Entity, "id">
 type BoardRelationship = Pick<
@@ -14,6 +15,7 @@ export type BoardNodeLayout = {
   y: number
   rotation: number
   degree: number
+  clusterId: string | null
 }
 
 export type BoardEdgeLayout = {
@@ -26,9 +28,50 @@ export type BoardEdgeLayout = {
 export type BoardLayout = {
   nodes: BoardNodeLayout[]
   edges: BoardEdgeLayout[]
+  clusters: BoardClusterLayout[]
+}
+
+export type BoardClusterLayout = {
+  id: string
+  label: string
+  path: string
+  labelX: number
+  labelY: number
+  labelAnchor: "start" | "middle" | "end"
+  nodeCount: number
 }
 
 const round = (value: number) => Math.round(value * 10) / 10
+const clampIslandLabelY = (value: number) =>
+  Math.min(720, Math.max(26, value))
+
+function placeIslandLabel(x: number, y: number) {
+  if (x < 140) {
+    return { x: 18, y: clampIslandLabelY(y), anchor: "start" as const }
+  }
+  if (x > 860) {
+    return { x: 982, y: clampIslandLabelY(y), anchor: "end" as const }
+  }
+  return { x, y: clampIslandLabelY(y), anchor: "middle" as const }
+}
+
+function smoothClosedPath(points: { x: number; y: number }[]) {
+  if (points.length < 3) return ""
+  const midpoint = (
+    left: { x: number; y: number },
+    right: { x: number; y: number }
+  ) => ({ x: (left.x + right.x) / 2, y: (left.y + right.y) / 2 })
+  const start = midpoint(points.at(-1)!, points[0]!)
+  return [
+    `M ${round(start.x)} ${round(start.y)}`,
+    ...points.map((point, index) => {
+      const next = points[(index + 1) % points.length]!
+      const end = midpoint(point, next)
+      return `Q ${round(point.x)} ${round(point.y)} ${round(end.x)} ${round(end.y)}`
+    }),
+    "Z",
+  ].join(" ")
+}
 
 function perimeterPosition(index: number, total: number) {
   const left = 85
@@ -60,9 +103,10 @@ function perimeterPosition(index: number, total: number) {
 
 export function createBoardLayout(
   entities: readonly BoardEntity[],
-  relationships: readonly BoardRelationship[]
+  relationships: readonly BoardRelationship[],
+  clusters: readonly BoardClusterInput[] = []
 ): BoardLayout {
-  if (entities.length === 0) return { nodes: [], edges: [] }
+  if (entities.length === 0) return { nodes: [], edges: [], clusters: [] }
 
   const degrees = new Map(entities.map((entity) => [entity.id, 0]))
   for (const relationship of relationships) {
@@ -104,6 +148,34 @@ export function createBoardLayout(
         left.id.localeCompare(right.id)
     )
   })
+  const orbitIndex = new Map(orbit.map((entity, index) => [entity.id, index]))
+  const assignedEntityIds = new Set<string>()
+  const groupedOrbit = clusters.flatMap((cluster) => {
+    const members = cluster.entityIds
+      .filter((id) => orbitIds.has(id) && !assignedEntityIds.has(id))
+      .map((id) => entityById.get(id))
+      .filter((entity): entity is BoardEntity => Boolean(entity))
+      .sort(
+        (left, right) =>
+          (orbitIndex.get(left.id) ?? Number.MAX_SAFE_INTEGER) -
+          (orbitIndex.get(right.id) ?? Number.MAX_SAFE_INTEGER)
+      )
+    members.forEach((entity) => assignedEntityIds.add(entity.id))
+    return members.map((entity) => ({ entity, clusterId: cluster.id }))
+  })
+  const ungroupedOrbit = orbit
+    .filter((entity) => !assignedEntityIds.has(entity.id))
+    .map((entity) => ({ entity, clusterId: null }))
+  const positionedOrbit = [...groupedOrbit, ...ungroupedOrbit]
+  const clusterMode = clusters.length >= 2 && positionedOrbit.length >= 3
+  const visibleClusterCount = clusters.filter((cluster) =>
+    positionedOrbit.some((item) => item.clusterId === cluster.id)
+  ).length
+  const clusterGapUnits = 0.8
+  const totalOrbitUnits =
+    positionedOrbit.length + visibleClusterCount * clusterGapUnits
+  let clusterCursor = 0
+  let previousClusterId: string | null | undefined
   const nodes: BoardNodeLayout[] = [
     {
       id: center.id,
@@ -111,24 +183,122 @@ export function createBoardLayout(
       y: BOARD_VIEWBOX.height / 2,
       rotation: -0.4,
       degree: degrees.get(center.id) ?? 0,
+      clusterId: null,
     },
-    ...orbit.map((entity, index) => {
-      const angle = -Math.PI / 2 + (Math.PI * 2 * index) / orbit.length
-      const position = orbit.length >= 15
-        ? perimeterPosition(index, orbit.length)
-        : {
-            x: BOARD_VIEWBOX.width / 2 + Math.cos(angle) * 405,
-            y: BOARD_VIEWBOX.height / 2 + Math.sin(angle) * 305,
+    ...positionedOrbit.map(({ entity, clusterId }, index) => {
+      if (
+        clusterMode &&
+        previousClusterId !== undefined &&
+        clusterId !== previousClusterId
+      ) {
+        clusterCursor += clusterGapUnits
+      }
+      const angle = clusterMode
+        ? -Math.PI / 2 +
+          (Math.PI * 2 * (clusterCursor + 0.5)) / totalOrbitUnits
+        : -Math.PI / 2 +
+          (Math.PI * 2 * index) / positionedOrbit.length
+      const radialJitter = clusterMode ? ((index % 3) - 1) * 12 : 0
+      const position = clusterMode
+        ? {
+            x:
+              BOARD_VIEWBOX.width / 2 +
+              Math.cos(angle) * (390 + radialJitter),
+            y:
+              BOARD_VIEWBOX.height / 2 +
+              Math.sin(angle) * (292 + radialJitter * 0.55),
           }
+        : positionedOrbit.length >= 15
+          ? perimeterPosition(index, orbit.length)
+          : {
+              x: BOARD_VIEWBOX.width / 2 + Math.cos(angle) * 405,
+              y: BOARD_VIEWBOX.height / 2 + Math.sin(angle) * 305,
+            }
+      clusterCursor += 1
+      previousClusterId = clusterId
       return {
         id: entity.id,
         x: round(position.x),
         y: round(position.y),
         rotation: round(((index % 5) - 2) * 0.65),
         degree: degrees.get(entity.id) ?? 0,
+        clusterId,
       }
     }),
   ]
+  const clusterLayouts = clusterMode
+    ? clusters.flatMap((cluster): BoardClusterLayout[] => {
+        const members = nodes.filter((node) => node.clusterId === cluster.id)
+        if (members.length === 0) return []
+        const radial = members.map((node) => {
+          const dx = node.x - BOARD_VIEWBOX.width / 2
+          const dy = node.y - BOARD_VIEWBOX.height / 2
+          const length = Math.hypot(dx, dy) || 1
+          return { node, ux: dx / length, uy: dy / length }
+        })
+        if (members.length === 1) {
+          const { node, ux, uy } = radial[0]!
+          const label = placeIslandLabel(node.x + ux * 112, node.y + uy * 98)
+          return [
+            {
+              id: cluster.id,
+              label: cluster.label,
+              path: `M ${round(node.x - 100)} ${round(node.y)} A 100 76 0 1 0 ${round(node.x + 100)} ${round(node.y)} A 100 76 0 1 0 ${round(node.x - 100)} ${round(node.y)} Z`,
+              labelX: round(label.x),
+              labelY: round(label.y),
+              labelAnchor: label.anchor,
+              nodeCount: 1,
+            },
+          ]
+        }
+        const outer = radial.map(({ node, ux, uy }) => ({
+          x: node.x + ux * 62,
+          y: node.y + uy * 54,
+        }))
+        const inner = radial
+          .map(({ node, ux, uy }) => ({
+            x: node.x - ux * 62,
+            y: node.y - uy * 54,
+          }))
+          .reverse()
+        const first = radial[0]!
+        const last = radial.at(-1)!
+        const firstTangent = { x: -first.uy, y: first.ux }
+        const lastTangent = { x: -last.uy, y: last.ux }
+        outer[0] = {
+          x: outer[0]!.x - firstTangent.x * 52,
+          y: outer[0]!.y - firstTangent.y * 52,
+        }
+        outer[outer.length - 1] = {
+          x: outer.at(-1)!.x + lastTangent.x * 52,
+          y: outer.at(-1)!.y + lastTangent.y * 52,
+        }
+        inner[0] = {
+          x: inner[0]!.x + lastTangent.x * 52,
+          y: inner[0]!.y + lastTangent.y * 52,
+        }
+        inner[inner.length - 1] = {
+          x: inner.at(-1)!.x - firstTangent.x * 52,
+          y: inner.at(-1)!.y - firstTangent.y * 52,
+        }
+        const labelAnchor = radial[Math.floor(radial.length / 2)]!
+        const label = placeIslandLabel(
+          labelAnchor.node.x + labelAnchor.ux * 112,
+          labelAnchor.node.y + labelAnchor.uy * 98
+        )
+        return [
+          {
+            id: cluster.id,
+            label: cluster.label,
+            path: smoothClosedPath([...outer, ...inner]),
+            labelX: round(label.x),
+            labelY: round(label.y),
+            labelAnchor: label.anchor,
+            nodeCount: members.length,
+          },
+        ]
+      })
+    : []
   const nodeById = new Map(nodes.map((node) => [node.id, node]))
   const pairTotals = new Map<string, number>()
   const pairIndexes = new Map<string, number>()
@@ -159,5 +329,5 @@ export function createBoardLayout(
       labelY: round(labelY),
     }]
   })
-  return { nodes, edges }
+  return { nodes, edges, clusters: clusterLayouts }
 }

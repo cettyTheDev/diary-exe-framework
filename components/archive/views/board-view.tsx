@@ -31,6 +31,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { createBoardClusters } from "@/lib/archive/board-clusters"
 import { BOARD_VIEWBOX, createBoardLayout } from "@/lib/archive/board-layout"
 import { relationshipLabels } from "@/lib/archive/types"
 import { readEnumParam } from "@/lib/archive/url-state"
@@ -92,7 +93,16 @@ export function BoardView({
   ])
   const selectedArc =
     selectedArcId === "all" ? undefined : repository.getStoryArc(selectedArcId)
-  const boardLayout = createBoardLayout(entities, relationships)
+  const boardClusters = createBoardClusters(
+    allEntries,
+    relationships,
+    storyArcs
+  )
+  const boardLayout = createBoardLayout(
+    entities,
+    relationships,
+    boardClusters
+  )
   const hubDegree = Math.max(
     0,
     ...boardLayout.nodes.map((node) => node.degree)
@@ -103,6 +113,10 @@ export function BoardView({
   const lensDegree = lensEntityId
     ? (boardLayout.nodes.find((node) => node.id === lensEntityId)?.degree ?? 0)
     : 0
+  const lensClusterId = lensEntityId
+    ? (boardLayout.nodes.find((node) => node.id === lensEntityId)?.clusterId ??
+      null)
+    : null
   const relationshipIndex = new Map(
     relationships.map((relationship, index) => [relationship.id, index + 1])
   )
@@ -296,8 +310,8 @@ export function BoardView({
                 </>
               ) : (
                 <>
-                  Drag to pan. Scroll to zoom. Hover a marker to isolate its
-                  cited connections.
+                  Story islands group related cited links. Drag to pan, scroll
+                  to zoom, or hover a marker to isolate its connections.
                 </>
               )}
             </p>
@@ -394,6 +408,46 @@ export function BoardView({
             >
               <div className="board-grid" aria-hidden="true" />
               <svg
+                className="board-islands"
+                viewBox={`0 0 ${BOARD_VIEWBOX.width} ${BOARD_VIEWBOX.height}`}
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                {boardLayout.clusters.map((cluster) => (
+                  <g
+                    key={cluster.id}
+                    className={cn(
+                      "board-island",
+                      selectedArcId !== "all" &&
+                        cluster.id !== selectedArcId &&
+                        "is-muted",
+                      lensClusterId &&
+                        cluster.id !== lensClusterId &&
+                        "is-deemphasized"
+                    )}
+                  >
+                    <path d={cluster.path} />
+                    <text
+                      x={cluster.labelX}
+                      y={cluster.labelY}
+                      textAnchor={cluster.labelAnchor}
+                    >
+                      <tspan x={cluster.labelX} className="board-island-label">
+                        {cluster.label}
+                      </tspan>
+                      <tspan
+                        x={cluster.labelX}
+                        dy="14"
+                        className="board-island-count"
+                      >
+                        {cluster.nodeCount}{" "}
+                        {cluster.nodeCount === 1 ? "marker" : "markers"}
+                      </tspan>
+                    </text>
+                  </g>
+                ))}
+              </svg>
+              <svg
                 className="board-lines"
                 viewBox={`0 0 ${BOARD_VIEWBOX.width} ${BOARD_VIEWBOX.height}`}
                 preserveAspectRatio="none"
@@ -427,6 +481,7 @@ export function BoardView({
                     className={cn(
                       "board-node",
                       `is-kind-${entity.kind}`,
+                      node.clusterId && "is-clustered",
                       node.degree === hubDegree &&
                         node.degree > 1 &&
                         "is-hub",

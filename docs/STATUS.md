@@ -6,6 +6,7 @@ Updated: 2026-07-30 UTC
 
 - The fixture-safe Board now exposes bounded 70%–240% zoom, drag and keyboard panning, reset controls, and a focus/hover relationship lens. Dense graphs remain a full-width card list below 72rem so touch scrolling and text readability are preserved.
 - The generic Board visual layer now replaces uniform rectangular nodes and a square grid with an entity-shaped evidence orbit: circular hubs, irregular person markers, organization capsules, topic hexagons, relation-count seals, orbit guides, pill arc filters, and alternating evidence-card corners. Fixture labels remain explicit and unchanged.
+- Generic story-island grouping now follows citation-matched entry and arc assignments instead of visual guesswork. The deterministic layout keeps clusters in separate perimeter sectors, draws curved island ribbons, dims unrelated islands with the relationship lens, and provides an explicit fallback for uncategorized cited entities.
 - A source-neutral approved-slice contract and compact runtime package are now public framework code. The compact form omits only deterministic repetition and must reconstruct an artifact that passes its original checksum, review attestation, and production-quality gates.
 - Production schemas now require an HTTPS source URL plus explicit editorial posture and response state; fixture data keeps those production-only values null or absent and remains visibly synthetic.
 - The relationship board is data-driven instead of four-node hard-coded: a deterministic layout supports small fixture graphs and bounded dense downstream graphs, separates repeated edges, preserves connected-component order, and switches dense nodes to a narrower-screen list.
@@ -15,9 +16,10 @@ Updated: 2026-07-30 UTC
 
 ## Verified
 
-- ESLint, strict TypeScript, all 56 fixture/boundary tests, and the nine-route production build pass.
+- ESLint, strict TypeScript, all 59 fixture/boundary tests, and the nine-route production build pass.
 - The fixture Board keeps every node and edge visibly labeled as demo data while exercising the same zoom/pan/lens interaction boundary as downstream reviewed graphs.
 - Chromium verifies the fixture-safe controls at 140% zoom with the expected transformed stage, horizontal desktop controls, no viewport overflow, and a 390px mobile fallback with four full-width cards and hidden zoom controls.
+- Chromium verifies two synthetic story islands on the four-node fixture Board, including the explicit uncategorized fallback; all four `DEMO NODE` and three `DEMO EDGE` labels remain visible, while the 390px fallback hides the decorative islands and keeps four full-width cards.
 - Compact-package regression reconstructs the exact artifact and rejects changed entry text through the original checksum gate; all three public-data boundary tests still pass.
 - Chromium verifies the four-node/three-edge dynamic fixture Board with zero overlaps at 1440px, the stacked mobile Board at `390:390`, visible `DESIGN FIXTURE` and `SOURCE FILE REQUIRED` boundaries, zero named production entities, and zero console errors or warnings.
 
