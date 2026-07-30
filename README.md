@@ -22,6 +22,8 @@ or private project history.
 - a fixture-safe evidence-magazine discovery cover and local share-card renderer;
 - bounded Board zoom/pan controls, keyboard navigation, evidence-derived story
   islands, a relationship lens, and a mobile reading-list fallback;
+- a source workbench with a document-density map, page-frame navigation, paper
+  review surface, and selected-page inspector over permanently synthetic data;
 - typed provenance, citation, review, and authorization contracts;
 - deterministic fixture-only ingestion, extraction, indexing, and quality
   checks;

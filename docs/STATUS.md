@@ -4,6 +4,7 @@ Updated: 2026-07-30 UTC
 
 ## Completed
 
+- The fixture Source Files page now demonstrates the full terminal evidence-workbench structure: source dossier, document-density map, page frames, paper placeholder, and selected-record inspector. All three frames are explicitly marked as demo interactions and no official-source action is enabled.
 - The fixture-safe Board now exposes bounded 70%–240% zoom, drag and keyboard panning, reset controls, and a focus/hover relationship lens. Dense graphs remain a full-width card list below 72rem so touch scrolling and text readability are preserved.
 - The generic Board visual layer now replaces uniform rectangular nodes and a square grid with an entity-shaped evidence orbit: circular hubs, irregular person markers, organization capsules, topic hexagons, relation-count seals, orbit guides, pill arc filters, and alternating evidence-card corners. Fixture labels remain explicit and unchanged.
 - Generic story-island grouping now follows citation-matched entry and arc assignments instead of visual guesswork. The deterministic layout keeps clusters in separate perimeter sectors, draws curved island ribbons, dims unrelated islands with the relationship lens, and provides an explicit fallback for uncategorized cited entities.
@@ -16,6 +17,7 @@ Updated: 2026-07-30 UTC
 
 ## Verified
 
+- Chromium verifies three synthetic Source frames, repeated demo/source-boundary labels, zero source URLs or production identities, exact viewport width, and zero console errors or warnings. The 59-test suite, all three explicit public-boundary checks, nine-route build, and zero-vulnerability audit pass.
 - ESLint, strict TypeScript, all 59 fixture/boundary tests, and the nine-route production build pass.
 - The fixture Board keeps every node and edge visibly labeled as demo data while exercising the same zoom/pan/lens interaction boundary as downstream reviewed graphs.
 - Chromium verifies the fixture-safe controls at 140% zoom with the expected transformed stage, horizontal desktop controls, no viewport overflow, and a 390px mobile fallback with four full-width cards and hidden zoom controls.
